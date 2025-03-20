@@ -1,0 +1,168 @@
+啊啊啊啊
+我一开始根据学的，觉得它既然是多个加法加密，我就想可以拆成多个加法加密，再套上循环，再加上
+它具有周期性，我觉的可以用模运算来处理，究竟是第几个字符是该字符的密钥，于是我就有了第一版
+维吉尼亚加密（错误版），它存在很多问题，以及需要完善的地方，它甚至在运行上会报错（这个错误
+我将在第二版解决它），但是它在逻辑上实现了我想要的加密。
+
+维吉尼亚加密（错误版）：
+print('请输入明文：')
+message = input()
+print('请输入密钥：')
+key = str(input())
+translated = ''
+message = message.upper()
+key = key.upper()
+LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+for symbol in message:
+    if symbol in LETTERS:
+        num = LETTERS.find(symbol) 
+        a = message.find(symbol)
+        b = LETTERS.find(key[a])
+        num = (num + b) % len(LETTERS)
+
+        translated = translated + LETTERS[num]
+    else:
+        translated = translated + symbol
+print(translated)
+
+然后我就需要改进它，于是我将它发给AI为我在不改变我的主体逻辑的情况下，修复这个问题，于是我就
+有了第二版维吉尼亚加密（简易版），它不能运行的问题被解决了，能够实现加密，但是它仍然存在问题，
+因为它的加密是错误的，我通过不断测试发现，它错误的原因是因为空格，虽然它不参与加密，但是因为
+它的存在，密码出现了偏移，就是我的代码中(以第二版为例) 理论上message[i]中应该是3但是由于存在
+一个空格i变成了4，这就是它的问题，虽然它仍然不能实现准确的加密（因为它遇到空格就歇菜） ，但是
+它也为我明确了问题，我需要在加密之前进行去除空格。
+
+维吉尼亚加密（简易版）：
+print('请输入明文：')
+message = input()
+print('请输入密钥：')
+key = input()
+translated = ''
+message = message.upper()
+key = key.upper()
+LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+for i in range(len(message)):
+    symbol = message[i]
+    if symbol in LETTERS:
+        num = LETTERS.find(symbol) 
+        a = i % len(key)
+        b = LETTERS.find(key[a])
+        num = (num + b) % len(LETTERS)
+        translated = translated + LETTERS[num]
+    else:
+        translated = translated + symbol
+print(translated)
+# 遇到空格会出错
+
+为了解决第二版的问题，于是我就new了一个第三版维吉尼亚加密（成功版），这一版我终于实现了真正的
+加密，但是它仍然存在很多问题，比如它的输出呈现的非常糟糕，然后编译后我辛苦输入的空格消失了，我
+想让它出现，并且加密性更强（如果直接将我的空格显示出来，容易被解密出），这是我再次改进的原因
+
+维吉尼亚加密（成功版）：
+print('请输入明文：')
+message = input()
+print('请输入密钥：')
+key = input()
+translated = ''
+message = message.upper()
+key = key.upper()
+LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+new_message = message.replace(" ","") 
+for i in range(len(new_message)):
+    symbol = new_message[i]
+    if symbol in LETTERS:
+        num = LETTERS.find(symbol) 
+        a = i % len(key)
+        b = LETTERS.find(key[a])
+        num = (num + b) % len(LETTERS)
+        translated = translated + LETTERS[num]
+    else:
+        translated = translated + symbol
+replacement = " "
+new_translated = ''
+for symbol1 in message:
+    for symbol2 in translated:
+        if symbol1.isspace():
+            new_translated  += replacement
+        else:
+            new_translated += symbol2
+              
+print(new_translated)
+
+第四版维吉尼亚加密（小有所成版）是AI根据我的第三版改进的，所以肯定成功了
+
+维吉尼亚加密（小有所成版）：
+print('请输入明文：')
+message = input()
+print('请输入密钥：')
+key = input()
+translated = ''
+message = message.upper()
+key = key.upper()
+LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+new_message = message.replace(" ","") 
+for i in range(len(new_message)):
+    symbol = new_message[i]
+    if symbol in LETTERS:
+        num = LETTERS.find(symbol) 
+        a = i % len(key)
+        b = LETTERS.find(key[a])
+        num = (num + b) % len(LETTERS)
+        translated = translated + LETTERS[num]
+    else:
+        translated = translated + symbol
+translated_with_spaces = ''
+j = 0  # 用于跟踪translated字符串的索引
+for i in range(len(message)):
+    if message[i].isspace():
+        translated_with_spaces += ' '
+    else:
+        translated_with_spaces += translated[j]
+        j += 1
+print(translated_with_spaces)
+
+最后我实现了一个增强加密性（好像是这样的，应该都懂的）的小功能，就是再最后不仅
+将空格还给了加密后的密文而且将空格进行了加密，当然了实际就是将你提供的特殊字符
+随机插入，之所以使用随机特殊字符还是为了不容易让你猜出这里原来是空格，最终编程
+了，第五版------维吉尼亚加密（最终版）。
+
+维吉尼亚加密（最终版）：
+import re
+import random
+print('请输入明文：')
+message = input()
+print('你需要将空格替换为：')
+replacement = list(input())
+print('请输入密钥：')
+key = input()
+translated = ''
+message = message.upper()
+key = key.upper()
+LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+new_message = message.replace(" ","") 
+for i in range(len(new_message)):
+    symbol = new_message[i]
+    if symbol in LETTERS:
+        num = LETTERS.find(symbol) 
+        a = i % len(key)
+        b = LETTERS.find(key[a])
+        num = (num + b) % len(LETTERS)
+        translated = translated + LETTERS[num]
+    else:
+        translated = translated + symbol
+translated_with_spaces = ''
+j = 0  # 用于跟踪translated字符串的索引
+for i in range(len(message)):
+    if message[i].isspace():
+        translated_with_spaces += ' '
+    else:
+        translated_with_spaces += translated[j]
+        j += 1      
+final_translated = ''
+for symbol in translated_with_spaces:
+    if symbol.isspace():
+        final_translated += random.choice(replacement)
+    else:
+        final_translated += symbol
+
+print(final_translated)
