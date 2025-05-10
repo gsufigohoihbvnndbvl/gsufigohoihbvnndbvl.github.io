@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AES密码 | 达芬奇的漫画</title><meta name="author" content="救食主（十亿bug的噩梦）"><meta name="copyright" content="救食主（十亿bug的噩梦）"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="输入的字节顺序：1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16规定的字节排序方式：1 5 9 132 6 10 143 7 11 154 8 12 16 明文 初始变换 9轮循环运算  &#x3D; &gt;  1-字节代换 2-行移位 3-列混合 4-轮密钥加 1轮最中轮  （1，2，4）  密文 初始变换明文矩阵 ^ 子密钥矩阵 12345678910111213">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AES密码">
+<meta property="og:url" content="http://gsufigohoihbvnndbvl.github.io/2025/05/08/%E5%AF%86%E7%A0%81%E5%AD%A6/AES%E5%AF%86%E7%A0%81/index.html">
+<meta property="og:site_name" content="达芬奇的漫画">
+<meta property="og:description" content="输入的字节顺序：1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16规定的字节排序方式：1 5 9 132 6 10 143 7 11 154 8 12 16 明文 初始变换 9轮循环运算  &#x3D; &gt;  1-字节代换 2-行移位 3-列混合 4-轮密钥加 1轮最中轮  （1，2，4）  密文 初始变换明文矩阵 ^ 子密钥矩阵 12345678910111213">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://gsufigohoihbvnndbvl.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-05-08T08:23:56.000Z">
+<meta property="article:modified_time" content="2025-05-10T08:42:57.375Z">
+<meta property="article:author" content="救食主（十亿bug的噩梦）">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://gsufigohoihbvnndbvl.github.io/img/butterfly-icon.png"><link rel="shortcut icon" href="../../../../../img/favicon.png"><link rel="canonical" href="http://gsufigohoihbvnndbvl.github.io/2025/05/08/%E5%AF%86%E7%A0%81%E5%AD%A6/AES%E5%AF%86%E7%A0%81/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="../../../../../css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AES密码',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'site'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="../img/butterfly-icon.png" onerror="this.onerror=null;this.src='../img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="../archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="../tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="../categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="../index.html"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="../../../../../index.html"><span class="site-name">达芬奇的漫画</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="../index.html"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">AES密码</h1></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>输入的字节顺序：1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16<br>规定的字节排序方式：<br>1 5 9 13<br>2 6 10 14<br>3 7 11 15<br>4 8 12 16<br> 明文</p>
+<p>初始变换</p>
+<p>9轮循环运算  &#x3D; &gt;  1-字节代换 2-行移位 3-列混合 4-轮密钥加</p>
+<p>1轮最中轮  （1，2，4）</p>
+<p> 密文</p>
+<h2 id="初始变换"><a href="#初始变换" class="headerlink" title="初始变换"></a>初始变换</h2><p>明文矩阵 ^ 子密钥矩阵</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">test = &#x27;messagenihaoword&#x27;</span><br><span class="line">def str_bin(text):</span><br><span class="line">    return &#x27;&#x27;.join(bin(byte)[2:].zfill(8) for byte in text.encode())</span><br><span class="line">def pro_message(test):</span><br><span class="line">    mess = []</span><br><span class="line">    for symbol in test:</span><br><span class="line">        #symbol = str_bin(symbol)  // 转换成二进制数</span><br><span class="line">        mess.append(symbol)</span><br><span class="line">    result = [[None] * 4 for _ in range(4)]   // 生成空的4*4矩阵</span><br><span class="line">    for i in range(16):</span><br><span class="line">        row = i % 4   // 行通过模4运算确定，该数在哪一列</span><br><span class="line">        col = i // 4  // 通过取余确定，该数在哪一行</span><br><span class="line">        result[row][col] = mess[i] // 将数填入到空矩阵</span><br><span class="line">    print(result)</span><br><span class="line"></span><br><span class="line">pro_message(test)</span><br></pre></td></tr></table></figure>
+
+<h2 id="字节代换"><a href="#字节代换" class="headerlink" title="字节代换"></a>字节代换</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">test = [</span><br><span class="line">    [0x19,0xa0,0x9a,0xe9],</span><br><span class="line">    [0x3d,0xf4,0xc6,0xf8],</span><br><span class="line">    [0xe3,0xe2,0x8d,0x48],</span><br><span class="line">    [0xbe,0x2b,0x2a,0x08]]</span><br><span class="line">S_BOX = [</span><br><span class="line">    [0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76],</span><br><span class="line">	[0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0],</span><br><span class="line">	[0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15],</span><br><span class="line">	[0x04,0xc7,0x23,0xc3,0x18,0x96,0x05,0x9a,0x07,0x12,0x80,0xe2,0xeb,0x27,0xb2,0x75],</span><br><span class="line">	[0x09,0x83,0x2c,0x1a,0x1b,0x6e,0x5a,0xa0,0x52,0x3b,0xd6,0xb3,0x29,0xe3,0x2f,0x84],</span><br><span class="line">	[0x53,0xd1,0x00,0xed,0x20,0xfc,0xb1,0x5b,0x6a,0xcb,0xbe,0x39,0x4a,0x4c,0x58,0xcf],</span><br><span class="line">	[0xd0,0xef,0xaa,0xfb,0x43,0x4d,0x33,0x85,0x45,0xf9,0x02,0x7f,0x50,0x3c,0x9f,0xa8],</span><br><span class="line">	[0x51,0xa3,0x40,0x8f,0x92,0x9d,0x38,0xf5,0xbc,0xb6,0xda,0x21,0x10,0xff,0xf3,0xd2],</span><br><span class="line">	[0xcd,0x0c,0x13,0xec,0x5f,0x97,0x44,0x17,0xc4,0xa7,0x7e,0x3d,0x64,0x5d,0x19,0x73],</span><br><span class="line">	[0x60,0x81,0x4f,0xdc,0x22,0x2a,0x90,0x88,0x46,0xee,0xb8,0x14,0xde,0x5e,0x0b,0xdb],</span><br><span class="line">	[0xe0,0x32,0x3a,0x0a,0x49,0x06,0x24,0x5c,0xc2,0xd3,0xac,0x62,0x91,0x95,0xe4,0x79],</span><br><span class="line">	[0xe7,0xc8,0x37,0x6d,0x8d,0xd5,0x4e,0xa9,0x6c,0x56,0xf4,0xea,0x65,0x7a,0xae,0x08],</span><br><span class="line">	[0xba,0x78,0x25,0x2e,0x1c,0xa6,0xb4,0xc6,0xe8,0xdd,0x74,0x1f,0x4b,0xbd,0x8b,0x8a],</span><br><span class="line">	[0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e],</span><br><span class="line">	[0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf],</span><br><span class="line">	[0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">def SubBytes(test):</span><br><span class="line">    for i in range(4):</span><br><span class="line">        for j in range(4):</span><br><span class="line">            symbol = hex(test[i][j])[2:].zfill(2)  // 将十六进制数字变成字符串，去掉前两个字符，如果少于两个会在前面补充一个0</span><br><span class="line">            row = int(symbol[0],16)   //获取行，及symbol的第一位保持它的十六进制数</span><br><span class="line">            col = int(symbol[1],16)    // 获取列，及symbol的第二位保持它的十六进制数</span><br><span class="line">            test[i][j] = hex(S_BOX[row][col])   //转换成16进制字符串，替换掉同位置test上的数</span><br><span class="line">    print(test)</span><br><span class="line"></span><br><span class="line">SubBytes(test)</span><br></pre></td></tr></table></figure>
+<h2 id="行移位"><a href="#行移位" class="headerlink" title="行移位"></a>行移位</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">test = [</span><br><span class="line">    [&#x27;p1&#x27;,&#x27;p5&#x27;,&#x27;p9&#x27;,&#x27;p13&#x27;],</span><br><span class="line">    [&#x27;p2&#x27;,&#x27;p6&#x27;,&#x27;p10&#x27;,&#x27;p14&#x27;],</span><br><span class="line">    [&#x27;p3&#x27;,&#x27;p7&#x27;,&#x27;p11&#x27;,&#x27;p15&#x27;],</span><br><span class="line">    [&#x27;p4&#x27;,&#x27;p8&#x27;,&#x27;p12&#x27;,&#x27;p16&#x27;]</span><br><span class="line">]</span><br><span class="line">def ShiftRows(test):</span><br><span class="line">    for i in range(4):  // 因为第0行不动，所以从第一行开始</span><br><span class="line">        row = test[i]  // 获取第i行</span><br><span class="line">        test[i] = row[i:] + row[:i]   // 将前i个剪切到后面，并不改变顺序</span><br><span class="line">    for symbol in test:</span><br><span class="line">        result.append([f&#x27;0x&#123;x:02x&#125;&#x27; for x in row])</span><br><span class="line">    return  result</span><br><span class="line">a = ShiftRows(test)</span><br><span class="line">print(a)</span><br></pre></td></tr></table></figure>
+
+<h2 id="列混合"><a href="#列混合" class="headerlink" title="列混合"></a>列混合</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">stable  = [</span><br><span class="line">    [0x02,0x03,0x01,0x01],</span><br><span class="line">    [0x01,0x02,0x03,0x01],</span><br><span class="line">    [0x01,0x01,0x02,0x03],</span><br><span class="line">    [0x03,0x01,0x01,0x02]</span><br><span class="line">]</span><br><span class="line">test = [</span><br><span class="line">    [0xd4,0xe0,0xb8,0x1e],</span><br><span class="line">    [0xbf,0xb4,0x41,0x27],</span><br><span class="line">    [0x5d,0x52,0x11,0x98],</span><br><span class="line">    [0x30,0xae,0xf1,0xe5]</span><br><span class="line">]</span><br><span class="line">def MixColumns(test):</span><br></pre></td></tr></table></figure>
+
+<h2 id="轮密钥加-（还没有弄好需要再次调整）"><a href="#轮密钥加-（还没有弄好需要再次调整）" class="headerlink" title="轮密钥加  （还没有弄好需要再次调整）"></a>轮密钥加  （还没有弄好需要再次调整）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">test = [</span><br><span class="line">    [0x2b,0x28,0xab,0x09],</span><br><span class="line">    [0x7e,0xae,0xf7,0xcf],</span><br><span class="line">    [0x15,0xd2,0x15,0x4f],</span><br><span class="line">    [0x16,0xa6,0x88,0x3c]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def T(matrix):</span><br><span class="line">    result = []</span><br><span class="line">    transposed_matrix = [list(row) for row in zip(*matrix)]</span><br><span class="line"></span><br><span class="line">    # 确保每个元素是整数类型</span><br><span class="line">    for row in transposed_matrix:</span><br><span class="line">        result.append([f&#x27;0x&#123;int(x):02x&#125;&#x27; for x in row])  # 将每个元素转为整数，再格式化为16进制</span><br><span class="line"></span><br><span class="line">    return result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def XOR(a, b):</span><br><span class="line">    result = []</span><br><span class="line">    for i, j in zip(a, b):</span><br><span class="line">        # 去除 &#x27;0x&#x27; 前缀（如果存在），确保字符串不为空</span><br><span class="line">        i = i.lstrip(&#x27;0x&#x27;) or &#x27;0&#x27;</span><br><span class="line">        j = j.lstrip(&#x27;0x&#x27;) or &#x27;0&#x27;</span><br><span class="line">        # 执行 XOR 操作，并将结果转换为16进制格式</span><br><span class="line">        xor_result = int(i, 16) ^ int(j, 16)</span><br><span class="line"></span><br><span class="line">        # 转换结果为16进制字符串，保留 &#x27;0x&#x27;，并补零</span><br><span class="line">        result.append(&#x27;0x&#x27; + hex(xor_result)[2:].zfill(2))  # 保证结果为两位十六进制数字</span><br><span class="line"></span><br><span class="line">    return result</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def key_Expansion(test):</span><br><span class="line">    temp = 1</span><br><span class="line">    result = []</span><br><span class="line">    test = T(test)</span><br><span class="line">    for i in range(4):</span><br><span class="line">        row = []</span><br><span class="line">        for j in range(4):</span><br><span class="line">            row.append(test[i][j])</span><br><span class="line">        result.append(row)</span><br><span class="line"></span><br><span class="line">    while temp &lt;= 10:</span><br><span class="line">        for i in range(len(result),len(result)+4):</span><br><span class="line">            if i % 4 != 0 :</span><br><span class="line">                result.append(XOR(result[i-4],result[i-1]))</span><br><span class="line">            else:</span><br><span class="line">                result.append(XOR(result[i-4],T(result[i-1])))</span><br><span class="line">        temp += 1</span><br><span class="line">    return result</span><br><span class="line"></span><br><span class="line">a = key_Expansion(test)</span><br><span class="line">print(a)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://gsufigohoihbvnndbvl.github.io">救食主（十亿bug的噩梦）</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://gsufigohoihbvnndbvl.github.io/2025/05/08/%E5%AF%86%E7%A0%81%E5%AD%A6/AES%E5%AF%86%E7%A0%81/">http://gsufigohoihbvnndbvl.github.io/2025/05/08/%E5%AF%86%E7%A0%81%E5%AD%A6/AES%E5%AF%86%E7%A0%81/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://gsufigohoihbvnndbvl.github.io" target="_blank">达芬奇的漫画</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="../../../../../img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav id="pagination"><div class="pagination"></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="../img/butterfly-icon.png" onerror="this.onerror=null;this.src='../img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">救食主（十亿bug的噩梦）</div><div class="author-info-description">感觉不是很有趣</div><div class="site-data"><a href="../archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="../tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="../categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">嘿嘿，记录一下学习</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="../2025/05/08/%E5%AF%86%E7%A0%81%E5%AD%A6/AES%E5%AF%86%E7%A0%81/" title="AES密码">AES密码</a><time datetime="2025-05-08T08:23:56.000Z" title="发表于 2025-05-08 16:23:56">2025-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="../2025/04/26/%E9%87%8D%E8%A6%81%E6%96%87%E6%A1%A3/" title="重要文档">重要文档</a><time datetime="2025-04-26T08:44:06.000Z" title="发表于 2025-04-26 16:44:06">2025-04-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="../2025/04/26/leetcode/3110-%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%88%86%E6%95%B0/" title="3110.字符串的分数">3110.字符串的分数</a><time datetime="2025-04-26T07:26:23.000Z" title="发表于 2025-04-26 15:26:23">2025-04-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="../2025/04/20/%E5%AF%86%E7%A0%81%E5%AD%A6/DES%E5%AF%86%E7%A0%81/" title="DES密码">DES密码</a><time datetime="2025-04-20T05:59:56.000Z" title="发表于 2025-04-20 13:59:56">2025-04-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="../2025/04/14/leetcode/242-%E6%9C%89%E6%95%88%E7%9A%84%E5%AD%97%E6%AF%8D%E5%BC%82%E4%BD%8D%E8%AF%8D/" title="242.有效的字母异位词">242.有效的字母异位词</a><time datetime="2025-04-14T08:57:52.000Z" title="发表于 2025-04-14 16:57:52">2025-04-14</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="../categories/leetcode/"><span class="card-category-list-name">leetcode</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="../categories/python%E6%B8%B8%E6%88%8F/"><span class="card-category-list-name">python游戏</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="../categories/%E4%BF%AE%E5%A4%8D%E9%97%AE%E9%A2%98/"><span class="card-category-list-name">修复问题</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="../categories/%E5%AF%86%E7%A0%81%E5%AD%A6/"><span class="card-category-list-name">密码学</span><span class="card-category-list-count">7</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="../categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"><span class="card-category-list-name">操作系统</span><span class="card-category-list-count">4</span></a></li>
+          </ul></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="../archives/2025/05/">
+            <span class="card-archive-list-date">
+              五月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="../archives/2025/04/">
+            <span class="card-archive-list-date">
+              四月 2025
+            </span>
+            <span class="card-archive-list-count">11</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="../archives/2025/03/">
+            <span class="card-archive-list-date">
+              三月 2025
+            </span>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">19</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-05-10T08:43:46.707Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;2025 By 救食主（十亿bug的噩梦）</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.0-b1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="../../../../../js/utils.js"></script><script src="../../../../../js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
